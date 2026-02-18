@@ -19,8 +19,8 @@ return new class extends Migration
             $table->integer('referencia_tarjeta');
             $table->unsignedBigInteger('metodo_pago_id');
             $table->foreign('metodo_pago_id')->references('id')->on('metodos_pagos');
-             $table->unsignedBigInteger('detelle_membresia_id');
-            $table->foreign('detelle_membresia_id')->references('id')->on('detalle_membresias');
+             $table->unsignedBigInteger('detalle_membresia_id');
+            $table->foreign('detalle_membresia_id')->references('id')->on('detalle_membresias');
             $table->timestamps();
         });
     }

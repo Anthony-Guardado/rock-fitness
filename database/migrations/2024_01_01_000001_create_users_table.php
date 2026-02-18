@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('correo')->unique();
-            $table->timestamp('correo_verified_at')->nullable();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('telefono');
             $table->string('dui');
             $table->string('password');
             $table->rememberToken();
-             $table->unsignedBigInteger('usuario_id');
-            $table->foreign('usuario_id')->references('id')->on('users');
+             $table->unsignedBigInteger('tipo_usuario_id');
+            $table->foreign('tipo_usuario_id')->references('id')->on('tipos_usuarios');
             $table->timestamps();
         });
 

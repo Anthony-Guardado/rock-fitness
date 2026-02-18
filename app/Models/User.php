@@ -17,12 +17,16 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
+   protected $fillable = [
+    'nombre',
+    'apellido',
+    'email',
+    'telefono',
+    'dui',
+    'password',
+    'tipo_usuario_id', // <-- ¡TIENE QUE ESTAR AQUÍ!
+];
+   
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -44,5 +48,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tipo_usuario()
+    {
+        return $this->belongsTo(Tipo_Usuario::class);
     }
 }
