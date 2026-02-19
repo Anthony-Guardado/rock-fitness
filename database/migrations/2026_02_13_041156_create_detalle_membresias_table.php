@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('detalle_membresias', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
+            $table->dateTime('fecha_inicio');
+            $table->dateTime('fecha_fin');
              $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users');
              $table->unsignedBigInteger('estado_membresia_id');

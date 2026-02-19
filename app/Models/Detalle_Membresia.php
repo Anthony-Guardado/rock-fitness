@@ -16,8 +16,8 @@ class Detalle_Membresia extends Model
     ];
 
     protected $casts = [
-         'fecha_inicio' => 'date',
-        'fecha_fin' => 'date'
+         'fecha_inicio' => 'dateTime',
+        'fecha_fin' => 'dateTime'
     ];
 
  

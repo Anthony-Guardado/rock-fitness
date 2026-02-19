@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
             $table->decimal('monto', 10, 2);
-            $table->date('fecha_pago');
-            $table->integer('referencia_pago');
-            $table->integer('referencia_tarjeta');
+            $table->dateTime('fecha');
+            $table->integer('referencia');
+            $table->integer('referencia_tarj');
             $table->unsignedBigInteger('metodo_pago_id');
             $table->foreign('metodo_pago_id')->references('id')->on('metodos_pagos');
              $table->unsignedBigInteger('detalle_membresia_id');
