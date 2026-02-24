@@ -11,8 +11,8 @@ class Detalle_Membresia extends Model
         'fecha_inicio',
         'fecha_fin',
         'usuario_id',              // <--- Agregar
-    'estado_membresia_id',   // <--- Agregar
-    'membresia_id'
+        'estado_membresia_id',   // <--- Agregar
+        'membresia_id'
     ];
 
     protected $casts = [
