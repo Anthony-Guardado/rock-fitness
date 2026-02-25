@@ -21,5 +21,5 @@ Route::apiResource('membresias', MembresiaController::class);
 Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('estados_membresias', EstadoMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
-Route::apiResource('imagenes', ImagenController::class);
-Route::apiResource('auth', AuthController::class);
+
+
