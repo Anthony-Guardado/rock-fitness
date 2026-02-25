@@ -10,8 +10,8 @@ class Detalle_Membresia extends Model
     protected $fillable =[
         'fecha_inicio',
         'fecha_fin',
-        'usuario_id',              // <--- Agregar
-        'estado_membresia_id',   // <--- Agregar
+        'usuario_id',              
+        'estado_membresia_id',   
         'membresia_id'
     ];
 
