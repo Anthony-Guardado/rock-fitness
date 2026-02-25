@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('dui');
             $table->string('password');
             $table->rememberToken();
-             $table->unsignedBigInteger('tipo_usuario_id');
-            $table->foreign('tipo_usuario_id')->references('id')->on('tipos_usuarios');
             $table->timestamps();
         });
 

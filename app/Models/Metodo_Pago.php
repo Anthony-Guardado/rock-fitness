@@ -13,6 +13,6 @@ class Metodo_Pago extends Model
 
    public function pagos()
    {
-    return $this->hasMany(Pago::class);
+    return $this->hasMany(Pago::class, 'metodo_pago_id');
    }
 }

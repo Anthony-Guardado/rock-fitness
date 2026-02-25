@@ -17,7 +17,7 @@ class Pago extends Model
 
     protected $casts =[
         'monto' => 'decimal:2',
-        'fecha' => 'dateTime', 
+        'fecha' => 'datetime', 
         'referencia' => 'int',
         'referencia_tarj' => 'int'
     ];
