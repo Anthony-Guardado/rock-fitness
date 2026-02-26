@@ -9,7 +9,7 @@ use App\Http\Controllers\DetalleMembresiaController;
 use App\Http\Controllers\EstadoMembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ImagenController;
-use App\Http\Controllers\AuthController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
