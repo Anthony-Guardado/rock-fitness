@@ -7,6 +7,7 @@ use App\Models\Membresia;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\Rule;
 
+
 class MembresiaController extends Controller
 {
     /**
@@ -20,7 +21,7 @@ class MembresiaController extends Controller
 
         }catch(\Exception $e){
             return response()->json([
-                'message' => 'Error al obtener la información de las membresias',
+                'message' => 'Error al obtener las las membresias',
             ],500);
         }
     }
@@ -61,9 +62,24 @@ class MembresiaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show( $id)
     {
-        //
+        try{
+            $membresia = Membresia::find($id);
+
+            if(!$membresia){
+                return response()->json([
+                    'message' => 'Membresia no encontrada'
+                ],400);
+            }
+
+            return response()->json($membresia, 200);
+
+        }catch(\Exception $e){
+            return response([
+                'message' =>  'Error al obtener la membresia'
+            ],500);
+        }
     }
 
     /**
