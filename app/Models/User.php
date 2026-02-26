@@ -23,8 +23,7 @@ class User extends Authenticatable
     'email',
     'telefono',
     'dui',
-    'password',
-    'tipo_usuario_id', // <-- ¡TIENE QUE ESTAR AQUÍ!
+    'password'
 ];
    
     /**
@@ -50,8 +49,4 @@ class User extends Authenticatable
         ];
     }
 
-    public function tipo_usuario()
-    {
-        return $this->belongsTo(Tipo_Usuario::class);
-    }
 }

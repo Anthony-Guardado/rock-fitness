@@ -16,15 +16,19 @@ class MetodoPagoController extends Controller
     public function index()
     {
         try{
-
-        $metodopago = Metodo_Pago::all();
+ 
+             //marcas ordenadas
+        $metodopago = Metodo_Pago::orderBy('id','desc')->get();
+        return response()->json([
+            'metodos' => $metodopago
+        ],200);
 
         return response()->json([
             'message' => $metodopago
         ], 200);
         }catch(\Exception $e){
             return response()->json([
-                'message' => 'error al obtener los metodos de pago',
+                'message' => 'Error al obtener los metodos de pago',
                 'error' => $e->getMessage()
             ], 500);
             
@@ -48,7 +52,7 @@ class MetodoPagoController extends Controller
 
         // 3. Mensaje lógico corregido
         return response()->json([
-            'message' => 'Método de pago registrado correctamente',
+            'message' => 'Metodo de pago registrado correctamente',
             'metodopago' => $metodopago
         ], 201);
 
@@ -72,7 +76,16 @@ class MetodoPagoController extends Controller
      */
     public function show(string $id)
     {
-        //
+    try{
+            $metodopago = Metodo_Pago::findOrfail($id);
+            return response()->json($metodopago);
+
+        }catch(\exception $e){
+              return response()->json([
+                'message' => 'Metdodo de pago no encontrado',
+                'error' => $e->getMessage()
+            ],500);
+        }
     }
 
     /**
@@ -80,7 +93,39 @@ class MetodoPagoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+             //primero obtenemos el registro de la bd
+            $metodopago = Metodo_Pago::findOrFail($id);
+            //aplicamos validaciones a nivel de request
+            $request->validate(
+                [
+                    'nombre' => [
+                        'required',
+                        'string',
+                        'min:2',
+                        'max:80',
+                        Rule::unique('metodos_pagos', 'nombre')->ignore($id)
+                    ]
+                ],
+                [
+                    'nombre.unique' => 'Ya existe un metodo de pago con este nombre en la base de datos'
+                ]
+            );
+
+            //mandamos a actualizar el registro
+            $metodopago->update([
+                'nombre' =>$request->nombre
+            ]);
+            return response()->json([
+                'message' => 'Metodo de pago actualizado correctamente',
+                'metodopago' => $metodopago
+            ],202);    
+        }catch(\Exception $e){
+             return response()->json([
+                'message' => 'Metodo de pago no encontrado',
+                'error' => $e->getMessage()
+            ],500);
+        }
     }
 
     /**
@@ -88,6 +133,25 @@ class MetodoPagoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+         try {
+            $metodopago = Metodo_Pago::with('pagos')->findOrFail($id);
+
+            if ($metodopago->pagos()->exists()) {
+                return response()->json([
+                    'message' => 'No se puede eliminar el metodo de pago porque tiene pagos asociados.'
+                ], 409);
+            }
+
+            $metodopago->delete();
+
+            return response()->json([
+                'message' => 'Metodo de pago eliminado correctamente.'
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Metodo de pago no encontrado, con el ID = ' .$id
+            ], 404);
+        }
     }
 }
