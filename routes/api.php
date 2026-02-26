@@ -9,7 +9,6 @@ use App\Http\Controllers\DetalleMembresiaController;
 use App\Http\Controllers\EstadoMembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ImagenController;
-use App\Http\Controllers\AuthController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -22,4 +21,4 @@ Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('estados_membresias', EstadoMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
 Route::apiResource('imagenes', ImagenController::class);
-Route::apiResource('users', AuthController::class);
+
