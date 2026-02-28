@@ -11,8 +11,8 @@ class Pago extends Model
     'fecha',
     'referencia',
     'referencia_tarj',
-    'metodo_pago_id',      // <-- Agregar esta
-    'detalle_membresia_id' // <-- Agregar esta
+    'metodo_pago_id',      
+    'detalle_membresia_id' 
 ];
 
     protected $casts =[
