@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->decimal('monto', 10, 2);
             $table->dateTime('fecha');
-            $table->integer('referencia');
-            $table->integer('referencia_tarj');
+            $table->string('referencia');
+            $table->string('descripcion_metodo_pago')->nullable();
             $table->unsignedBigInteger('metodo_pago_id');
             $table->foreign('metodo_pago_id')->references('id')->on('metodos_pagos');
-             $table->unsignedBigInteger('detalle_membresia_id');
+            $table->unsignedBigInteger('detalle_membresia_id');
             $table->foreign('detalle_membresia_id')->references('id')->on('detalle_membresias');
             $table->timestamps();
         });
