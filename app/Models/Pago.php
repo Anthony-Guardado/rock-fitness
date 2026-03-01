@@ -10,16 +10,16 @@ class Pago extends Model
     'monto',
     'fecha',
     'referencia',
-    'referencia_tarj',
-    'metodo_pago_id',      
+    'descripcion_metodo_pago',
+    'metodo_pago_id',     
     'detalle_membresia_id' 
 ];
 
     protected $casts =[
         'monto' => 'decimal:2',
         'fecha' => 'datetime', 
-        'referencia' => 'int',
-        'referencia_tarj' => 'int'
+        'referencia' => 'string',
+        'descripcion_metodo_pago' => 'string'
     ];
 
     public function metodo_pago()

@@ -9,6 +9,7 @@ use App\Http\Controllers\EstadoMembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,6 +34,7 @@ Route::apiResource('membresias', MembresiaController::class);
 Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('estados_membresias', EstadoMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
+Route::apiResource('user', UserController::class);
 
 
 
