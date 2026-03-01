@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('membresias', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 30);
+              $table->text('descripcion'); 
             $table->integer('duracion_mes');
             $table->decimal('precio', 10,2);
             $table->timestamps();
