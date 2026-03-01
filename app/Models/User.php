@@ -13,6 +13,18 @@ class User extends Authenticatable implements JWTSubject
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    //Sobreescribir la variable en $guard_name
+    protected $guard_name = 'api';
+
+    //Implementación de los metodos de jwt
+    public function getJwtIdentifier(){
+        return $this->getKey();
+    }
+    
+    public function getJWTCustomClaims(){
+        return[];
+    }
+
     /**
      * The attributes that are mass assignable.
      *
