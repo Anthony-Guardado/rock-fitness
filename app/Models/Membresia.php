@@ -9,7 +9,8 @@ class Membresia extends Model
     protected $fillable =[
         'nombre',
         'duracion_mes',
-        'precio'
+        'precio',
+        'descripcion'
     ];
 
      protected $casts = [
