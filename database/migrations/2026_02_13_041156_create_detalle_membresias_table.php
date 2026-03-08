@@ -12,17 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalle_membresias', function (Blueprint $table) {
-            $table->id();
-            $table->dateTime('fecha_inicio');
-            $table->dateTime('fecha_fin');
-             $table->unsignedBigInteger('usuario_id');
-            $table->foreign('usuario_id')->references('id')->on('users');
-             $table->unsignedBigInteger('estado_membresia_id');
-            $table->foreign('estado_membresia_id')->references('id')->on('estados_membresias');
-             $table->unsignedBigInteger('membresia_id');
-            $table->foreign('membresia_id')->references('id')->on('membresias');
-            $table->timestamps();
-        });
+        $table->id();
+        $table->dateTime('fecha_inicio');
+        $table->dateTime('fecha_fin');
+        $table->unsignedBigInteger('usuario_id');
+        $table->foreign('usuario_id')->references('id')->on('users');
+        $table->unsignedBigInteger('membresia_id');
+        $table->foreign('membresia_id')->references('id')->on('membresias');
+        // ENUM para estado de la membresía
+        $table->enum('estado', [
+            'activa',
+            'inactiva',
+            'cancelada',
+            'suspendida'
+        ])->default('activa');
+
+        $table->timestamps();
+    });
     }
 
     /**
