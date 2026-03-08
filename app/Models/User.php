@@ -20,7 +20,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJwtIdentifier(){
         return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims(){
         return[];
     }
@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
-   protected $fillable = [
+    protected $fillable = [
     'nombre',
     'apellido',
     'email',
@@ -38,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
     'dui',
     'password'
 ];
-   
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -61,5 +61,11 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
+
+    public function imagenes()
+{
+
+    return $this->hasMany(Imagen::class, 'usuario_id');
+}
 
 }

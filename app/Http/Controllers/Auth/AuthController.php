@@ -24,11 +24,11 @@ class AuthController extends Controller
                 'message' => 'Credenciales inválidas'
             ], 401);
         }
-        // En caso de exitoso retornamos el token 
+        // En caso de exitoso retornamos el token
         return $this->responseWithToken($token);
     }
 
-    //metodo para el registro de usuarios 
+    //metodo para el registro de usuarios
     public function register(Request $request)
     {
         //validamos datos a t r aves de request
@@ -69,16 +69,16 @@ class AuthController extends Controller
     }
 
     protected function responseWithToken($token){
-        return response()->json([
-            'acces_token' => $token,
-            'token_type' => 'bearer',
-            'user' => auth()->user(),
-            'expires_in' => auth()->factory()->getTTL() * 60,
-        ]);
-    }
+    return response()->json([
+        'access_token' => $token, // corregí 'acces_token' (faltaba una s)
+        'token_type' => 'bearer',
+        'user' => auth()->user()->load('roles:id,name'),
+        'expires_in' => auth()->factory()->getTTL() * 60,
+    ]);
+}
 
     public function me(){
-        return response()->jsson(auth()->user());
+        return response()->json(auth()->user());
     }
 
      // método para invalidar un token (logout)
