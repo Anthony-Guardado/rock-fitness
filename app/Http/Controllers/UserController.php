@@ -18,6 +18,13 @@ class UserController extends Controller
     public function index()
     {
         try {
+            $verUser = auth()->user();
+
+        // Si no es ADMIN, rebote inmediato
+        if (!$verUser || !$verUser->hasRole('ADMIN')) {
+            return response()->json(['message' => 'No tienes permiso para listar usuarios'], 403);
+        }
+
             $users = User::with(['roles:id,name', 'imagenes'])
             ->orderBy('id', 'desc')
             ->get();
@@ -81,10 +88,10 @@ class UserController extends Controller
         if (isset($userData['rol'])) {
             $user->assignRole($userData['rol']);
         } else {
-            $user->assignRole('cliente');
+            $user->assignRole('CLIENTE');
         }
 
-        // Imagen para el usuario
+        // Imagen para el usuario o el admin
         if ($request->hasFile('imagenes')) {
             foreach ($request->file('imagenes') as $file) {
                 $nombreImagen = time() . '_' . $file->getClientOriginalName();
@@ -134,7 +141,7 @@ class UserController extends Controller
         if (!$verUser) {
             return response()->json(['message' => 'No autenticado'], 401);
         }
-        
+
         if ($verUser->hasRole('ADMIN')) {
             return response()->json($user, 200);
         }
@@ -168,18 +175,136 @@ class UserController extends Controller
 }
 
     /**
-     * Update the specified resource in storage.
+     * Update este dependera si es usuario cliente o admin para los campos que modificara
      */
     public function update(Request $request, string $id)
-    {
-        //
+{
+    try {
+        $user = User::findOrFail($id);
+        $verUser = auth()->user();
+
+        if (!$verUser) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+
+        // Seguridad: Solo el ADMIN o el dueño del perfil
+        if (!$verUser->hasRole('ADMIN') && $verUser->id !== $user->id) {
+            return response()->json(['message' => 'No tienes permiso para editar este perfil'], 403);
+        }
+
+        if (!$request->has('user')) {
+            return response()->json(['message' => 'El objeto user es requerido'], 422);
+        }
+
+        $userData = json_decode($request->user, true);
+
+        if (!$userData) {
+        return response()->json(['message' => 'El formato del JSON dentro del campo user es inválido'], 422);
+}
+
+        // --- LÓGICA DE CAMPOS EDITABLES SEGÚN ROL ---
+
+        // 1. Campos que TODOS (Admin y Usuario) pueden cambiar
+        $data = [
+            'email'    => $userData['email'] ?? $user->email,
+            'telefono' => $userData['telefono'] ?? $user->telefono,
+        ];
+
+        // 2. Si el que está editando es ADMIN, le permitimos cambiar datos de identidad
+        if ($verUser->hasRole('ADMIN')) {
+            $data['nombre']   = $userData['nombre'] ?? $user->nombre;
+            $data['apellido'] = $userData['apellido'] ?? $user->apellido;
+            $data['dui']      = $userData['dui'] ?? $user->dui;
+        }
+        // --------------------------------------------
+
+        // 3. Validación dinámica
+        $rules = [
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'telefono' => 'required|string|unique:users,telefono,' . $id,
+        ];
+
+        // Si es admin, agregamos las reglas de los campos extra
+        if ($verUser->hasRole('ADMIN')) {
+            $rules['nombre']   = 'required|string|max:255';
+            $rules['apellido'] = 'required|string|max:255';
+            $rules['dui']      = 'required|string|unique:users,dui,' . $id;
+        }
+
+        $validator = Validator::make($data, $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        DB::beginTransaction();
+
+        $user->update($data);
+
+        // Gestión de Imágenes
+        if ($request->hasFile('imagenes')) {
+            foreach ($user->imagenes as $img) {
+                $ruta = public_path('images/users/' . $img->nombre);
+                if (file_exists($ruta)) { unlink($ruta); }
+                $img->delete();
+            }
+
+            foreach ($request->file('imagenes') as $file) {
+                $nombreImagen = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images/users'), $nombreImagen);
+                Imagen::create([
+                    'nombre' => $nombreImagen,
+                    'usuario_id' => $user->id
+                ]);
+            }
+        }
+
+        DB::commit();
+
+        if ($verUser->hasRole('ADMIN')) {
+            $mensaje = 'Usuario actualizado con éxito ';
+        } else {
+            $mensaje = 'Perfil actualizado. Los datos de identidad están bloqueados.';
+        }
+
+        return response()->json([
+            'message' => $mensaje,
+            'user' => $user->load(['roles:id,name', 'imagenes'])
+        ], 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['message' => 'Error al actualizar', 'error' => $e->getMessage()], 500);
     }
+}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try {
+        $user = User::findOrFail($id);
+        $verUser = auth()->user();
+
+        if (!$verUser || !$verUser->hasRole('ADMIN')) {
+            return response()->json(['message' => 'No tienes permisos'], 403);
+        }
+
+        if ($verUser->id === $user->id) {
+            return response()->json(['message' => 'No puedes desactivarte a ti mismo'], 400);
+        }
+
+        // Al tener SoftDeletes en el modelo, esto NO borra al usuario de la DB
+        // Solo pone la fecha en 'deleted_at'
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Usuario desactivado correctamente. Sus datos aún existen para reportes históricos.'
+        ], 200);
+
+    } catch (ModelNotFoundException $e) {
+        return response()->json(['message' => 'Usuario no encontrado'], 404);
+    }
     }
 }
