@@ -182,6 +182,15 @@ class UserController extends Controller
     public function update(Request $request, string $id)
 {
     try {
+        //Busca los usuarios validados
+        $user = User::withTrashed()->findOrFail($id);
+
+        //Valida que los datos de un usuario inactivo nose puedan modificar
+        if ($user->trashed()) {
+        return response()->json([
+        'message' => 'No puedes editar un usuario inactivo. Debes activarlo primero.'
+        ], 422);
+        }
         $user = User::findOrFail($id);
         $verUser = auth()->user();
 
