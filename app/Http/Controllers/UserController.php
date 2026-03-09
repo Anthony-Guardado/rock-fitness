@@ -20,7 +20,7 @@ class UserController extends Controller
         try {
             $verUser = auth()->user();
 
-        // Si no es ADMIN, rebote inmediato
+        // Validacion para que solo un admin pueda listar los usuarios
         if (!$verUser || !$verUser->hasRole('ADMIN')) {
             return response()->json(['message' => 'No tienes permiso para listar usuarios'], 403);
         }
@@ -65,7 +65,7 @@ class UserController extends Controller
             'password' => $userData['password'] ?? null,
         ];
 
-        // Validacion de user
+        // Validacion de los atributos
         $validator = Validator::make($data, [
             'nombre'   => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
@@ -81,10 +81,10 @@ class UserController extends Controller
 
         DB::beginTransaction();
 
-        // Asignarle el rol al usuario creado
+
         $user = User::create($data);
 
-
+        // Asignarle el rol al usuario creado
         if (isset($userData['rol'])) {
             $user->assignRole($userData['rol']);
         } else {
@@ -111,7 +111,7 @@ class UserController extends Controller
         }
 
         DB::commit();
-
+        //trae en la misma consulta el rol y la imagen
         $user->load(['roles:id,name', 'imagenes']);
 
         return response()->json([
@@ -133,19 +133,20 @@ class UserController extends Controller
      */
     public function show(string $id){
     try {
-
+        //verifica que este autenticado el usuario o el admin
         $user = User::with(['roles:id,name', 'imagenes'])->findOrFail($id);
         $verUser = auth()->user();
 
-        // Si el token no existe o es inválido
         if (!$verUser) {
             return response()->json(['message' => 'No autenticado'], 401);
         }
 
+        //si es un admin le manda todos los datos del usuario mediante su objeto
         if ($verUser->hasRole('ADMIN')) {
             return response()->json($user, 200);
         }
 
+        //valida que si le manda los datos sea el mismo usuario que quiere ver sus datos
         if ($verUser->id !== $user->id) {
             return response()->json([
                 'message' => 'No tienes permiso para ver este perfil.'
@@ -159,6 +160,7 @@ class UserController extends Controller
             'apellido' => $user->apellido,
             'email'    => $user->email,
             'telefono' => $user->telefono,
+            'dui'       => $user->dui,
             'imagenes' => $user->imagenes,
         ], 200);
 
@@ -187,7 +189,7 @@ class UserController extends Controller
             return response()->json(['message' => 'No autenticado'], 401);
         }
 
-        // Seguridad: Solo el ADMIN o el dueño del perfil
+        // verifica que sea admin o que sea el mismo perfil de la persona
         if (!$verUser->hasRole('ADMIN') && $verUser->id !== $user->id) {
             return response()->json(['message' => 'No tienes permiso para editar este perfil'], 403);
         }
@@ -202,36 +204,35 @@ class UserController extends Controller
         return response()->json(['message' => 'El formato del JSON dentro del campo user es inválido'], 422);
 }
 
-        // --- LÓGICA DE CAMPOS EDITABLES SEGÚN ROL ---
 
-        // 1. Campos que TODOS (Admin y Usuario) pueden cambiar
+        // Los atributos que editara el usuario
         $data = [
             'email'    => $userData['email'] ?? $user->email,
             'telefono' => $userData['telefono'] ?? $user->telefono,
         ];
 
-        // 2. Si el que está editando es ADMIN, le permitimos cambiar datos de identidad
+        // pero el admin puede editar los datos de edentidad
         if ($verUser->hasRole('ADMIN')) {
             $data['nombre']   = $userData['nombre'] ?? $user->nombre;
             $data['apellido'] = $userData['apellido'] ?? $user->apellido;
             $data['dui']      = $userData['dui'] ?? $user->dui;
         }
-        // --------------------------------------------
 
-        // 3. Validación dinámica
-        $rules = [
+        //Validacion
+        $campos = [
             'email'    => 'required|email|unique:users,email,' . $id,
             'telefono' => 'required|string|unique:users,telefono,' . $id,
         ];
 
-        // Si es admin, agregamos las reglas de los campos extra
+        // Si es admin agregamos los campos extra
         if ($verUser->hasRole('ADMIN')) {
-            $rules['nombre']   = 'required|string|max:255';
-            $rules['apellido'] = 'required|string|max:255';
-            $rules['dui']      = 'required|string|unique:users,dui,' . $id;
+            $campos['nombre']   = 'required|string|max:255';
+            $campos['nombre']   = 'required|string|max:255';
+            $campos['apellido'] = 'required|string|max:255';
+            $campos['dui']      = 'required|string|unique:users,dui,' . $id;
         }
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $campos);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -241,7 +242,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        // Gestión de Imágenes
+        // Gestion de imagnes
         if ($request->hasFile('imagenes')) {
             foreach ($user->imagenes as $img) {
                 $ruta = public_path('images/users/' . $img->nombre);
@@ -279,7 +280,7 @@ class UserController extends Controller
 }
 
     /**
-     * Remove the specified resource from storage.
+     * Metodo para el admin
      */
     public function destroy(string $id)
     {
@@ -295,8 +296,7 @@ class UserController extends Controller
             return response()->json(['message' => 'No puedes desactivarte a ti mismo'], 400);
         }
 
-        // Al tener SoftDeletes en el modelo, esto NO borra al usuario de la DB
-        // Solo pone la fecha en 'deleted_at'
+        // Pone inactivo el usuario
         $user->delete();
 
         return response()->json([
