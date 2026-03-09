@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\Metodo_Pago; 
+use App\Models\Metodo_Pago;
 
 class MetodoPagoController extends Controller
 {
@@ -16,7 +16,6 @@ class MetodoPagoController extends Controller
     public function index()
     {
         try{
- 
              //marcas ordenadas
         $metodopago = Metodo_Pago::orderBy('id','desc')->get();
         return response()->json([
@@ -31,7 +30,7 @@ class MetodoPagoController extends Controller
                 'message' => 'Error al obtener los metodos de pago',
                 'error' => $e->getMessage()
             ], 500);
-            
+
         }
     }
 
@@ -81,7 +80,7 @@ class MetodoPagoController extends Controller
             return response()->json($metodopago);
 
         }catch(\exception $e){
-              return response()->json([
+            return response()->json([
                 'message' => 'Metdodo de pago no encontrado',
                 'error' => $e->getMessage()
             ],500);
@@ -119,7 +118,7 @@ class MetodoPagoController extends Controller
             return response()->json([
                 'message' => 'Metodo de pago actualizado correctamente',
                 'metodopago' => $metodopago
-            ],202);    
+            ],202);
         }catch(\Exception $e){
              return response()->json([
                 'message' => 'Metodo de pago no encontrado',

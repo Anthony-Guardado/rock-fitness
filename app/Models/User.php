@@ -8,9 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements JWTSubject
 {
+    //Importacion para poder inactivar usuarios
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
     //Sobreescribir la variable en $guard_name
@@ -20,7 +26,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJwtIdentifier(){
         return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims(){
         return[];
     }
@@ -30,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
-   protected $fillable = [
+    protected $fillable = [
     'nombre',
     'apellido',
     'email',
@@ -38,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
     'dui',
     'password'
 ];
-   
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -61,5 +67,11 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
+
+    public function imagenes()
+{
+
+    return $this->hasMany(Imagen::class, 'usuario_id');
+}
 
 }
