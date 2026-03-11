@@ -33,6 +33,12 @@ Route::apiResource('membresias', MembresiaController::class);
 Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
 Route::apiResource('user', UserController::class);
+//RUTAS PERSOBNALIZADAS PARA DETALLE_MEMBRESIA, CAMBIAR LA MEMBRESIA Y EL estado
+
+//  Rutas personalizadas ANTES del apiResource
+Route::patch('detalle_membresias/{id}/cambiar', [DetalleMembresiaController::class, 'cambiarMembresia']);
+Route::patch('detalle_membresias/{id}/estado',  [DetalleMembresiaController::class, 'cambiarEstado']);
+
 
 // Rutas para la pasarela de pagos
 Route::middleware('auth:api')->group(function () {
