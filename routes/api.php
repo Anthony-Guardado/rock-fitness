@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\DetalleMembresiaController;
-use App\Http\Controllers\EstadoMembresiaController;
+//use App\Http\Controllers\EstadoMembresiaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\Auth\AuthController;
@@ -35,6 +35,8 @@ Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('estados_membresias', EstadoMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
 Route::apiResource('user', UserController::class);
+
+
 
 
 
