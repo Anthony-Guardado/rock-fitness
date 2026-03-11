@@ -28,7 +28,13 @@ class Detalle_Membresia extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'usuario_id');
+        return $this->belongsTo(User::class,'usuario_id');
+    }
+
+
+     public function estado_membresia()
+    {
+        return $this->belongsTo(Estado_Membresia::class);
     }
 
     public function membresia()
