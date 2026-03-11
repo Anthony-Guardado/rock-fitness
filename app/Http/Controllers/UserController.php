@@ -12,9 +12,8 @@ use App\Models\Imagen;
 
 class UserController extends Controller
 {
-    /**
-     * Metodo para que el admin pueda ver los usuarios
-     */
+
+     //Metodo para que el admin pueda ver los usuarios
     public function index()
     {
         try {
@@ -40,9 +39,7 @@ class UserController extends Controller
 }
     }
 
-    /**
-     * Este Metodo para que el usuario pueda crear los usuarios
-     */
+    // Este Metodo para que el usuario pueda crear los usuarios
     public function store(Request $request)
     {
     try {
@@ -176,9 +173,7 @@ class UserController extends Controller
     }
 }
 
-    /**
-     * Update este dependera si es usuario cliente o admin para los campos que modificara
-     */
+    // Update este dependera si es usuario cliente o admin para los campos que modificara
     public function update(Request $request, string $id)
 {
     try {
@@ -288,9 +283,7 @@ class UserController extends Controller
     }
 }
 
-    /**
-     * Metodo para el admin
-     */
+    // Metodo para el admin
     public function destroy(string $id)
     {
         try {
@@ -315,5 +308,35 @@ class UserController extends Controller
     } catch (ModelNotFoundException $e) {
         return response()->json(['message' => 'Usuario no encontrado'], 404);
     }
+        }
+
+    // Funcion para reactivar un usuario pero solo el admin tiene el permiso de realizar la funcion
+    public function restoreUser(Request $request, $id)
+    {
+         // Verificamos si el que está logueado el admin
+        if (!$request->user()->hasRole('ADMIN')) {
+            return response()->json([
+                'message' => 'No tienes permisos de administrador.'
+            ], 403);
+        }
+
+         // Busca todos los usuarios asta los inactivos
+        $user = User::withTrashed()->find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado.'], 404);
+        }
+
+        // Verificamos si realmente estaba inactivo
+        if ($user->trashed()) {
+            //regresa el delete a null
+            $user->restore();
+            return response()->json([
+                'message' => "El usuario {$user->nombre} ha sido reactivado con éxito."
+            ], 200);
+        }
+
+        return response()->json(['message' => 'El usuario ya se encuentra activo.'], 400);
     }
-}
+    }
+

@@ -18,9 +18,7 @@ class MetodoPagoController extends Controller
         try{
              //marcas ordenadas
         $metodopago = Metodo_Pago::orderBy('id','desc')->get();
-        return response()->json([
-            'metodos' => $metodopago
-        ],200);
+        return response()->json($metodopago,200);
 
         return response()->json([
             'message' => $metodopago

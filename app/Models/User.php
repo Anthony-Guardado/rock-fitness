@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements JWTSubject
 {
+    protected $table = 'users';
+    
     //Importacion para poder inactivar usuarios
     use SoftDeletes;
 
