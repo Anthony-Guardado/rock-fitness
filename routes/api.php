@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\DetalleMembresiaController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\MetodoPagoController;
@@ -30,26 +31,27 @@ Route::prefix('auth')->group(function () {
 // Rutas para recuperar contraseña
 Route::post('password/email', [PasswordResetController::class, 'sendResetLink']);
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword']);
+
 // Ruta para reactivar un usuario
 Route::post('/users/{id}/restore', [UserController::class, 'restoreUser']);
 
 // Creación de rutas para las APIs
 Route::apiResource('metodos_pagos', MetodoPagoController::class);
 Route::apiResource('membresias', MembresiaController::class);
-Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
-Route::apiResource('pagos', PagoController::class);
 Route::apiResource('user', UserController::class);
 
-//  Rutas personalizadas ANTES del apiResource
+// Rutas personalizadas ANTES del apiResource
 Route::patch('detalle_membresias/{id}/cambiar', [DetalleMembresiaController::class, 'cambiarMembresia']);
-Route::patch('detalle_membresias/{id}/estado',  [DetalleMembresiaController::class, 'cambiarEstado']);
-
+Route::patch('detalle_membresias/{id}/estado', [DetalleMembresiaController::class, 'cambiarEstado']);
+Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 
 // Rutas para la pasarela de pagos
+Route::apiResource('pagos', PagoController::class)->except(['store']);
+
 Route::middleware('auth:api')->group(function () {
-    Route::post('pagos/crear', [PagoController::class, 'store']);
+    Route::post('pagos/crear', [PagoController::class,    'store']);
     Route::post('payment/crear-intent', [PaymentController::class, 'crearPaymentIntent']);
-    Route::get('pagos/mis-pagos', [PagoController::class, 'misPagos']);
+    Route::get('pagos/mis-pagos', [PagoController::class,    'misPagos']);
 });
 
 Route::post('stripe/webhook', [StripeWebhookController::class, 'handle']);
