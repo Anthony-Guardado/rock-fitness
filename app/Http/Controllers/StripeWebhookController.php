@@ -17,7 +17,7 @@ class StripeWebhookController extends Controller
         $sigHeader = $request->header('Stripe-Signature');
 
         // Verificamos que el evento realmente viene de Stripe
-       
+
         try {
             $event = Webhook::constructEvent(
                 $payload,
@@ -51,7 +51,7 @@ class StripeWebhookController extends Controller
         $pago->update(['estado' => 'pagado']);
 
         Detalle_Membresia::where('id', $pago->detalle_membresia_id)
-            ->update(['estado' => 'activo']);
+            ->update(['estado' => 'activa']);
     }
 
     private function pagoFallido(object $paymentIntent): void
