@@ -10,6 +10,7 @@ use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -27,6 +28,9 @@ Route::prefix('auth')->group(function(){
     });
 });
 
+// Rutas para recuperar contraseña
+Route::post('password/email', [PasswordResetController::class, 'sendResetLink']);
+Route::post('password/reset', [PasswordResetController::class, 'resetPassword']);
 
 // Creación de rutas para las APIs
 Route::apiResource('metodos_pagos', MetodoPagoController::class);
@@ -35,6 +39,8 @@ Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 Route::apiResource('estados_membresias', EstadoMembresiaController::class);
 Route::apiResource('pagos', PagoController::class);
 Route::apiResource('user', UserController::class);
+// Ruta para reactivar un usuario
+Route::post('/users/{id}/restore', [UserController::class, 'restoreUser']);
 
 
 
