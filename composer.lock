@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42c93d1c0f834d6d7b8e77e96b968283",
+    "content-hash": "3d73c55b4996238b888d237a8d98a07f",
     "packages": [
         {
             "name": "brick/math",
@@ -6249,31 +6249,31 @@
         },
         {
             "name": "tymon/jwt-auth",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "6c98cea2c3f11a71c0c7f982dd2d76e64247ee28"
+                "reference": "6c70930a92710d97e8e52b182fca2176097f33be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/6c98cea2c3f11a71c0c7f982dd2d76e64247ee28",
-                "reference": "6c98cea2c3f11a71c0c7f982dd2d76e64247ee28",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/6c70930a92710d97e8e52b182fca2176097f33be",
+                "reference": "6c70930a92710d97e8e52b182fca2176097f33be",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^9.0|^10.0|^11.0|^12.0",
-                "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0",
-                "illuminate/http": "^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
-                "lcobucci/jwt": "^4.0",
+                "illuminate/auth": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/http": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "lcobucci/jwt": "^4.0|^5.0",
                 "nesbot/carbon": "^2.69|^3.0",
                 "php": "^8.0"
             },
             "require-dev": {
-                "illuminate/console": "^9.0|^10.0|^11.0|^12.0",
-                "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
-                "illuminate/routing": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/console": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/database": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/routing": "^9.0|^10.0|^11.0|^12.0|^13.0",
                 "mockery/mockery": "^1.6",
                 "phpunit/phpunit": "^9.4"
             },
@@ -6323,13 +6323,7 @@
                 "issues": "https://github.com/tymondesigns/jwt-auth/issues",
                 "source": "https://github.com/tymondesigns/jwt-auth"
             },
-            "funding": [
-                {
-                    "url": "https://www.patreon.com/seantymon",
-                    "type": "patreon"
-                }
-            ],
-            "time": "2025-02-28T08:14:11+00:00"
+            "time": "2026-03-06T09:50:45+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
