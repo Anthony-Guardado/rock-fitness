@@ -16,13 +16,13 @@ class DetalleMembresiaController extends Controller
         ->get();
 
         //Vemos si alguna embresia ya vencio
-        //aqui hubo un pequeñ cambio ya que esta funcion si el si la membresía se paso del año 
+        //aqui hubo un pequeñ cambio ya que esta funcion si el si la membresía se paso del año
         //automaticamente pus la pone como vencida
         foreach($detalle as $item)
             if($item->estado === 'activa' && Carbon::now()->isAfter($item->fecha_fin)){
             $item->update(['estado' => 'inactiva']);
             }
-        
+
         //Devolvemos la LISTA
             return response()->json([
                 'message' => 'La lista de las membresías fue obtenida con éxito',
@@ -44,8 +44,8 @@ class DetalleMembresiaController extends Controller
        $exists = Detalle_Membresia::where('usuario_id', $request->usuario_id)
             ->where('estado', 'activa')
             ->exists();
-        
-        //con un if decimo que si el usuario ya tiene una membresi, pues que me 
+
+        //con un if decimo que si el usuario ya tiene una membresi, pues que me
         //arroje un mensaje
         if($exists){
             return response()->json([
@@ -64,7 +64,7 @@ class DetalleMembresiaController extends Controller
         $detalle = Detalle_Membresia::create([
             'usuario_id' => $request->usuario_id,
             'membresia_id' => $request->membresia_id,
-            'estado' => 'activa',
+            'estado' => 'inactiva',
             'fecha_inicio' => $fecha_inicio,
             'fecha_fin' => $fecha_fin,
         ]);
@@ -76,7 +76,7 @@ class DetalleMembresiaController extends Controller
         ],201);
     }
 
-   
+
     //Aqui vamos  a ver el estado actual de la membresia del usuario
     //mas la actualizacion automatica del usuario
     public function show(string $id)
@@ -84,7 +84,7 @@ class DetalleMembresiaController extends Controller
         //Busco la membresia del usuario y me traigo sus relaciones
         $detalle = Detalle_Membresia::with(['membresia', 'user'])
         ->find($id);
-        
+
 
         //se verifica si exista
         if(!$detalle) {
@@ -97,7 +97,7 @@ class DetalleMembresiaController extends Controller
         if($detalle->estado === 'activa' && Carbon::now()->isAfter($detalle->fecha_fin)){
             $detalle->update(['estado' => 'inactiva']);
         }
-            
+
 
         //Devolvemos los datos de esa membresia
         return response()->json([
@@ -153,8 +153,8 @@ class DetalleMembresiaController extends Controller
         'data' => $detalle
     ],200);
     }
-    
-    
+
+
     //AQUI CAMBIAMOS EL ESTADO DE LA MEMBRESIA (Activa, Suspendida, Cancelada, Inactiva)
     public function cambiarEstado(Request $request, $id)
     {
@@ -183,7 +183,7 @@ class DetalleMembresiaController extends Controller
             ],409);
         }
 
-        //Si todo sale bien puesya actuaizamos 
+        //Si todo sale bien puesya actuaizamos
         $detalle->update([
             'estado' => $request->estado,
         ]);
@@ -194,7 +194,7 @@ class DetalleMembresiaController extends Controller
         ],200);
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
