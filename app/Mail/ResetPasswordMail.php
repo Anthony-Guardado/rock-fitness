@@ -20,7 +20,7 @@ class ResetPasswordMail extends Mailable
     {
         $this->token = $token;
     }
-    //Difinimos lo que realiza y de donde probiene el mensaje
+    //Muestra el servidor de corro que probiene(ej:El proceso que muestra de lo que esta realizando en gmail)
     public function envelope(): Envelope
     {
         return new Envelope(
