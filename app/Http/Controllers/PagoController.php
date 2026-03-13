@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Pago;
 use Illuminate\Http\Request;
 use App\Models\Detalle_Membresia;
+use Illuminate\Http\JsonResponse;
+use App\Models\Metodo_Pago;
 
 class PagoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(request $request): JssonResponse
+    public function index(Request $request): JsonResponse
     {
         if (! $request->user()->hasRole('ADMIN')) {
             return response()->json(['message' => 'No autorizado'], 403);

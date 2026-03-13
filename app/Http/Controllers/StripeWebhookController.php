@@ -28,7 +28,7 @@ class StripeWebhookController extends Controller
             return response('Firma inválida', 400);
         }
 
-//Estos son los eventos que revisara el stripe que procesara el webhook
+        // Estos son los eventos que revisara el stripe que procesara el webhook
         match ($event->type) {
             'payment_intent.succeeded' => $this->pagoExitoso($event->data->object),
             'payment_intent.payment_failed' => $this->pagoFallido($event->data->object),
@@ -48,7 +48,15 @@ class StripeWebhookController extends Controller
             return;
         }
 
-        $pago->update(['estado' => 'pagado']);
+        $last4 = null;
+        if (! empty($paymentIntent->payment_method_details->card->last4)) {
+            $last4 = 'El pago se realizó con la tarjeta xxxx-xxxx-xxxx-'.$paymentIntent->payment_method_details->card->last4;
+        }
+
+        $pago->update([
+            'estado' => 'pagado',
+            'descripcion_metodo_pago' => $last4,
+        ]);
 
         Detalle_Membresia::where('id', $pago->detalle_membresia_id)
             ->update(['estado' => 'activa']);
