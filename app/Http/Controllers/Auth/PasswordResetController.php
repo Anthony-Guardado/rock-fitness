@@ -40,7 +40,7 @@ class PasswordResetController extends Controller
         );
 
         // manda el email a mailable
-        Mail::to($request->email)->send(new ResetPasswordMail($token));
+        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
 
         // retorna la respuesta
         return response()->json([

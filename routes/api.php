@@ -50,3 +50,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('reportes/pagos', [ReporteController::class, 'pagosExitosos']);
     Route::get('reportes/total', [ReporteController::class, 'totalPorMes']);
 });
+
+//Esta ruta no esta protegida ya q es la que muestra las membresias al usuario antes de registrase
+Route::get('/membresias', [App\Http\Controllers\MembresiaController::class, 'index']);
