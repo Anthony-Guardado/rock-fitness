@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('membresias', MembresiaController::class);
     Route::patch('detalle_membresias/{id}/cambiar', [DetalleMembresiaController::class, 'cambiarMembresia']);
     Route::patch('detalle_membresias/{id}/estado', [DetalleMembresiaController::class, 'cambiarEstado']);
+    Route::get('detalle_membresias/miMembresia', [DetalleMembresiaController::class, 'miMembresia']);
     Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 
     // Pagos
