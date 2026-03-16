@@ -23,7 +23,7 @@ return new class extends Migration
         $table->enum('estado', [
             'activa',
             'inactiva',
-            'cancelada',
+            'cancelada',    
             'suspendida'
         ])->default('inactiva');
 
@@ -35,7 +35,7 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
-    { 
+    {
         Schema::dropIfExists('detalle_membresias');
     }
 };

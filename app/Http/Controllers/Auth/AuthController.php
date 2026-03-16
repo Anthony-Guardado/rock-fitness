@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Modls\Detalle_Membresia;
 use Spatie\Permission\Traits\HasRoles;
 
 class AuthController extends Controller
@@ -55,6 +56,16 @@ class AuthController extends Controller
 
           // Recordatorio--Asignar rol por defecto
             $user->assignRole('CLIENTE');
+
+         Detalle_Membresia::create([
+            'usuario_id' => $user->id,
+            'membresia_id' => null,
+            'fecha_inicio' => null,
+            'fecha_fin' => null,
+            'estado' => 'inactiva',
+            ]);
+
+
         // generamos el token
         $token = JWTAuth::fromUser($user);
         // retornamos la respuesta

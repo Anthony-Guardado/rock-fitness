@@ -42,15 +42,16 @@ class StripeWebhookController extends Controller
 
     private function pagoExitoso(object $paymentIntent): void
     {
-        // Buscamos el pago en nuestra data base usando el stripe_payment_intent_id
         $pago = Pago::where('stripe_payment_intent_id', $paymentIntent->id)->first();
-        if (! $pago) {
+
+        if (!$pago) {
             return;
         }
 
         $last4 = null;
-        if (! empty($paymentIntent->payment_method_details->card->last4)) {
-            $last4 = 'El pago se realizó con la tarjeta xxxx-xxxx-xxxx-'.$paymentIntent->payment_method_details->card->last4;
+
+        if (!empty($paymentIntent->payment_method_details->card->last4)) {
+            $last4 = 'El pago se realizó con la tarjeta xxxx-xxxx-xxxx-' . $paymentIntent->payment_method_details->card->last4;
         }
 
         $pago->update([
@@ -58,8 +59,28 @@ class StripeWebhookController extends Controller
             'descripcion_metodo_pago' => $last4,
         ]);
 
-        Detalle_Membresia::where('id', $pago->detalle_membresia_id)
-            ->update(['estado' => 'activa']);
+        $detalle = Detalle_Membresia::with('membresia')
+            ->find($pago->detalle_membresia_id);
+
+        if (!$detalle) {
+            return;
+        }
+
+        if (!$detalle->membresia_id || !$detalle->membresia) {
+            return;
+        }
+
+        $fechaInicio = now();
+
+        $duracionMeses = $detalle->membresia->duracion_mes ?? 1;
+
+        $fechaFin = $fechaInicio->copy()->addMonths($duracionMeses);
+
+        $detalle->update([
+            'estado' => 'activa',
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
+        ]);
     }
 
     private function pagoFallido(object $paymentIntent): void
