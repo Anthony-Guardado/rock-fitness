@@ -84,7 +84,7 @@ class PagoController extends Controller
     // Para que usuarios puedan ver sus pagos
     public function misPagos(Request $request): JsonResponse
     {
-        $pagos = Pago::with(['metodo_pago', 'detalle_membresia'])
+        $pagos = Pago::with(['metodo_pago', 'detalle_membresia.membresia',])
             ->whereHas('detalle_membresia', function ($query) use ($request) {
                 $query->where('usuario_id', $request->user()->id);
             })
