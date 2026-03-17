@@ -58,8 +58,17 @@ class StripeWebhookController extends Controller
             'descripcion_metodo_pago' => $last4,
         ]);
 
-        Detalle_Membresia::where('id', $pago->detalle_membresia_id)
-            ->update(['estado' => 'activa']);
+        $detalle = Detalle_Membresia::with('membresia')->find($pago->detalle_membresia_id);
+
+        if ($detalle) {
+            $meses = $detalle->membresia->duracion_mes;
+
+            $detalle->update([
+                'estado' => 'activa',
+                'fecha_inicio' => now(),
+                'fecha_fin' => now()->addMonths($meses),
+            ]);
+        }
     }
 
     private function pagoFallido(object $paymentIntent): void

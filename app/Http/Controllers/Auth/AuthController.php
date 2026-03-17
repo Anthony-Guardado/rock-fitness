@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\imagen;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Detalle_Membresia;
 use Spatie\Permission\Traits\HasRoles;
 
 class AuthController extends Controller
@@ -55,6 +57,34 @@ class AuthController extends Controller
 
           // Recordatorio--Asignar rol por defecto
             $user->assignRole('CLIENTE');
+
+        if ($request->hasFile('imagenes')) {
+            foreach ($request->file('imagenes') as $file) {
+                $nombreImagen = time() . '_' . $file->getClientOriginalName();
+                $rutaDestino = public_path('images/users');
+
+                if (!file_exists($rutaDestino)) {
+                    mkdir($rutaDestino, 0755, true);
+                }
+
+                $file->move($rutaDestino, $nombreImagen);
+
+                Imagen::create([
+                    'nombre' => $nombreImagen,
+                    'usuario_id' => $user->id
+                ]);
+            }
+        }
+
+         Detalle_Membresia::create([
+            'usuario_id' => $user->id,
+            'membresia_id' => null,
+            'fecha_inicio' => null,
+            'fecha_fin' => null,
+            'estado' => 'inactiva',
+            ]);
+
+
         // generamos el token
         $token = JWTAuth::fromUser($user);
         // retornamos la respuesta
@@ -68,6 +98,8 @@ class AuthController extends Controller
         ], 201);
     }
 
+
+
     protected function responseWithToken($token){
     return response()->json([
         'access_token' => $token, // corregí 'acces_token' (faltaba una s)
@@ -76,6 +108,7 @@ class AuthController extends Controller
         'expires_in' => auth()->factory()->getTTL() * 60,
     ]);
 }
+
 
     public function me(){
         return response()->json(auth()->user());
