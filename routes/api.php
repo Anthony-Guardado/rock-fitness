@@ -36,9 +36,10 @@ Route::middleware('auth:api')->group(function () {
     // Membresías
     Route::apiResource('metodos_pagos', MetodoPagoController::class);
     Route::apiResource('membresias', MembresiaController::class);
+     Route::get('detalle_membresias/miMembresia', [DetalleMembresiaController::class, 'miMembresia']);
     Route::patch('detalle_membresias/{id}/cambiar', [DetalleMembresiaController::class, 'cambiarMembresia']);
     Route::patch('detalle_membresias/{id}/estado', [DetalleMembresiaController::class, 'cambiarEstado']);
-    Route::get('detalle_membresias/miMembresia', [DetalleMembresiaController::class, 'miMembresia']);
+    Route::post('detalle_membresias/seleccionar', [DetalleMembresiaController::class, 'seleccionarMembresia']);
     Route::apiResource('detalle_membresias', DetalleMembresiaController::class);
 
     // Pagos
