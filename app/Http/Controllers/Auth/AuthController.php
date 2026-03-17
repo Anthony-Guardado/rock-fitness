@@ -98,6 +98,8 @@ class AuthController extends Controller
         ], 201);
     }
 
+
+
     protected function responseWithToken($token){
     return response()->json([
         'access_token' => $token, // corregí 'acces_token' (faltaba una s)
@@ -106,6 +108,7 @@ class AuthController extends Controller
         'expires_in' => auth()->factory()->getTTL() * 60,
     ]);
 }
+
 
     public function me(){
         return response()->json(auth()->user());

@@ -20,7 +20,7 @@ class DetalleMembresiaController extends Controller
         // aqui hubo un pequeñ cambio ya que esta funcion si el si la membresía se paso del año
         // automaticamente pus la pone como vencida
         foreach ($detalle as $item) {
-            if ($item->estado === 'activa' && Carbon::now()->isAfter($item->fecha_fin)) {
+            if ($item->estado === 'activa' && now()->greaterThanOrEqualTo($item->fecha_fin)) {
                 $item->update(['estado' => 'inactiva']);
             }
         }
@@ -93,7 +93,7 @@ class DetalleMembresiaController extends Controller
         }
 
         // Con esta funcion vemos si la membresi vecnion automaticamente
-        if ($detalle->estado === 'activa' && Carbon::now()->isAfter($detalle->fecha_fin)) {
+        if ($detalle->estado === 'activa' && now()->greaterThanOrEqualTo($detalle->fecha_fin)) {
             $detalle->update(['estado' => 'inactiva']);
         }
 
@@ -203,52 +203,56 @@ class DetalleMembresiaController extends Controller
             ], 404);
         }
 
+        if ($detalle->estado === 'activa' && now()->greaterThanOrEqualTo($detalle->fecha_fin)) {
+            $detalle->update(['estado' => 'inactiva']);
+        }
+
         return response()->json([
             'data' => $detalle,
         ], 200);
     }
 
     public function seleccionarMembresia(Request $request)
-        {
-            // Validamos que llegue el id de la membresía y que exista
-            $request->validate([
-                'membresia_id' => 'required|exists:membresias,id',
-            ]);
+    {
+        // Validamos que llegue el id de la membresía y que exista
+        $request->validate([
+            'membresia_id' => 'required|exists:membresias,id',
+        ]);
 
-            // Buscamos el detalle de membresía del usuario autenticado
-            $detalle = Detalle_Membresia::where('usuario_id', $request->user()->id)
-                ->latest()
-                ->first();
+        // Buscamos el detalle de membresía del usuario autenticado
+        $detalle = Detalle_Membresia::where('usuario_id', $request->user()->id)
+            ->latest()
+            ->first();
 
-            // Verificamos que exista el detalle
-            if (! $detalle) {
-                return response()->json([
-                    'message' => 'No se encontró el detalle de membresía del usuario',
-                ], 404);
-            }
-
-            // Verificamos que no tenga ya esa misma membresía asignada
-            if ($detalle->membresia_id == $request->membresia_id) {
-                return response()->json([
-                    'message' => 'Ya tienes seleccionada esa membresía',
-                ], 409);
-            }
-
-            // Actualizamos solo el tipo de membresía
-            // Las fechas siguen en null hasta que el pago sea exitoso
-            $detalle->update([
-                'membresia_id' => $request->membresia_id,
-                'estado' => 'inactiva',
-                'fecha_inicio' => null,
-                'fecha_fin' => null,
-            ]);
-
-            // Devolvemos respuesta exitosa
+        // Verificamos que exista el detalle
+        if (! $detalle) {
             return response()->json([
-                'message' => 'La membresía fue seleccionada correctamente',
-                'data' => $detalle,
-            ], 200);
+                'message' => 'No se encontró el detalle de membresía del usuario',
+            ], 404);
         }
+
+        // Verificamos que no tenga ya esa misma membresía asignada
+        if ($detalle->membresia_id == $request->membresia_id) {
+            return response()->json([
+                'message' => 'Ya tienes seleccionada esa membresía',
+            ], 409);
+        }
+
+        // Actualizamos solo el tipo de membresía
+        // Las fechas siguen en null hasta que el pago sea exitoso
+        $detalle->update([
+            'membresia_id' => $request->membresia_id,
+            'estado' => 'inactiva',
+            'fecha_inicio' => null,
+            'fecha_fin' => null,
+        ]);
+
+        // Devolvemos respuesta exitosa
+        return response()->json([
+            'message' => 'La membresía fue seleccionada correctamente',
+            'data' => $detalle,
+        ], 200);
+    }
 
     /**
      * Update the specified resource in storage.
