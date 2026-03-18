@@ -78,3 +78,7 @@ class StripeWebhookController extends Controller
             ->update(['estado' => 'fallido']);
     }
 }
+
+
+
+
