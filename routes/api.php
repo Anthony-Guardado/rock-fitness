@@ -46,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('pagos/crear', [PagoController::class, 'store']);
     Route::post('payment/crear-intent', [PaymentController::class, 'crearPaymentIntent']);
     Route::get('pagos/mispagos', [PagoController::class, 'misPagos']);
+    Route::patch('pagos/{id}/fallido', [PagoController::class, 'cancelar']);
     Route::apiResource('pagos', PagoController::class)->except(['store']);
 
     // Reportes
