@@ -12,6 +12,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ReporteController extends Controller
 {
     public function reportePagos(Request $request){
+
+        if (!$request->user()->hasRole('ADMIN')) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
          //Obtenemos los datos para hacer el filtro
         $fechaInicio = $request->fecha_inicio;
         $fechaFin = $request->fecha_fin;
