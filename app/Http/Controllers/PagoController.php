@@ -95,4 +95,25 @@ class PagoController extends Controller
             'pagos' => $pagos,
         ]);
     }
+
+
+    // Por si el cliente cancela se pondra como fallido bro
+    public function cancelar($id)
+    {
+        $pago = Pago::find($id);
+
+        if (!$pago) {
+            return response()->json([
+                'message' => 'Pago no encontrado'
+            ], 404);
+        }
+
+        $pago->update([
+            'estado' => 'fallido'
+        ]);
+
+        return response()->json([
+            'message' => 'Pago marcado como fallido'
+        ], 200);
+    }
 }
