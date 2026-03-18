@@ -232,9 +232,9 @@ class DetalleMembresiaController extends Controller
         }
 
         // Verificamos que no tenga ya esa misma membresía asignada
-        if ($detalle->membresia_id == $request->membresia_id) {
+        if ($detalle->membresia_id == $request->membresia_id && $detalle->estado === 'activa') {
             return response()->json([
-                'message' => 'Ya tienes seleccionada esa membresía',
+                'message' => 'Ya tienes activa esa membresía',
             ], 409);
         }
 
