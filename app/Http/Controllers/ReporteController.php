@@ -23,10 +23,8 @@ class ReporteController extends Controller
         $estado = $request->estado;
         //Creamos la consulta para obtener la informacion
         $query = Pago::with(['detalle_membresia.user', 'detalle_membresia.membresia'])
-        ->whereBetween('fecha', [$fechaInicio, $fechaFin]);
-        if($estado != 'pagado'){
-            $query->where('estado', $estado);
-        }
+            ->whereBetween('fecha', [$fechaInicio, $fechaFin])
+            ->where('estado', 'pagado');
         //Ordenamos el resultado
         $pagos = $query->orderBy('fecha', 'desc')->get();
         $totalVentas = $pagos->sum('monto');
