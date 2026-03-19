@@ -20,7 +20,7 @@ class DetalleMembresiaController extends Controller
         // aqui hubo un pequeñ cambio ya que esta funcion si el si la membresía se paso del año
         // automaticamente pus la pone como vencida
         foreach ($detalle as $item) {
-            if ($item->estado === 'activa' && now()->greaterThanOrEqualTo($item->fecha_fin)) {
+            if ($item->estado === 'activa' && $item->fecha_fin && now()->greaterThanOrEqualTo($item->fecha_fin)) {
                 $item->update(['estado' => 'inactiva']);
             }
         }
