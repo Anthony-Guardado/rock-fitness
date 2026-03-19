@@ -36,10 +36,10 @@ class PagoController extends Controller
             'metodo_pago_id' => 'required|exists:metodos_pagos,id',
         ]);
 
-        // Buscamos el detalle de membresía
+
         $detalle = Detalle_Membresia::with('membresia')->findOrFail($request->detalle_membresia_id);
 
-        // Se manda a trear el precio de la memebreia para que se inserte en el monto de pago
+        
         $monto = $detalle->membresia->precio;
 
         $pago = Pago::create([

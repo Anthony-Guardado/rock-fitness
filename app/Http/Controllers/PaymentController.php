@@ -13,7 +13,7 @@ class PaymentController extends Controller
     public function __construct()
     {
         // Con esta funcion constructura le decimos a stripe que cada vez
-        // ejecute este controlador usara la clave secreta que guardamos en .env de stripe
+
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
@@ -26,15 +26,14 @@ class PaymentController extends Controller
         $pago = Pago::findOrFail($request->pago_id);
 
         $paymentIntent = PaymentIntent::create([
-            'amount' => (int) ($pago->monto * 100), // esto equivale a 100 centavos, ya que stripe no trtabaja con dolares
+            'amount' => (int) ($pago->monto * 100),
             'currency' => 'usd',
             'metadata' => [
-                // Guardamos el pago_id para encontrarlo después en el webhook
+
                 'pago_id' => $pago->id,
             ],
         ]);
-        // Guardamos el id del PaymentIntent en nuestra database
-        // Esto conecta nuestro pago local con el pago en Stripe
+        
         $pago->update([
             'stripe_payment_intent_id' => $paymentIntent->id,
         ]);

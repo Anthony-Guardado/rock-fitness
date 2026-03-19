@@ -16,7 +16,7 @@ class MetodoPagoController extends Controller
     public function index()
     {
         try{
-             //marcas ordenadas
+
         $metodopago = Metodo_Pago::orderBy('id','desc')->get();
         return response()->json($metodopago,200);
 
@@ -37,23 +37,23 @@ class MetodoPagoController extends Controller
      */
     public function store(Request $request)
     {try {
-        // 1. Validación corregida (sin el pipe al final)
+
         $request->validate([
             'nombre' => 'required|string|min:3|max:22|unique:metodos_pagos,nombre'
         ]);
 
-        // 2. Creación corregida (sin el 201 adentro)
+
         $metodopago = Metodo_Pago::create([
             'nombre' => $request->nombre
         ]);
 
-        // 3. Mensaje lógico corregido
+
         return response()->json([
             'message' => 'Metodo de pago registrado correctamente',
             'metodopago' => $metodopago
         ], 201);
 
-    // 4. Excepciones bien escritas
+
     } catch (\Illuminate\Validation\ValidationException $e) {
         return response()->json([
             'message' => 'Error de validación.',
@@ -91,9 +91,8 @@ class MetodoPagoController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-             //primero obtenemos el registro de la bd
+             
             $metodopago = Metodo_Pago::findOrFail($id);
-            //aplicamos validaciones a nivel de request
             $request->validate(
                 [
                     'nombre' => [

@@ -20,7 +20,7 @@ class UserController extends Controller
         try {
             $verUser = auth()->user();
 
-        // Validacion para que solo un admin pueda listar los usuarios
+
         if (!$verUser || !$verUser->hasRole('ADMIN')) {
             return response()->json(['message' => 'No tienes permiso para listar usuarios'], 403);
         }
@@ -148,12 +148,12 @@ class UserController extends Controller
             return response()->json(['message' => 'No autenticado'], 401);
         }
 
-        //si es un admin le manda todos los datos del usuario mediante su objeto
+
         if ($verUser->hasRole('ADMIN')) {
             return response()->json($user, 200);
         }
 
-        //valida que si le manda los datos sea el mismo usuario que quiere ver sus datos
+
         if ($verUser->id !== $user->id) {
             return response()->json([
                 'message' => 'No tienes permiso para ver este perfil.'
@@ -183,14 +183,14 @@ class UserController extends Controller
     }
 }
 
-    // Update este dependera si es usuario cliente o admin para los campos que modificara
+
     public function update(Request $request, string $id)
 {
     try {
         //Busca los usuarios validados
         $user = User::withTrashed()->findOrFail($id);
 
-        //Valida que los datos de un usuario inactivo nose puedan modificar
+
         if ($user->trashed()) {
         return response()->json([
         'message' => 'No puedes editar un usuario inactivo. Debes activarlo primero.'
@@ -203,7 +203,7 @@ class UserController extends Controller
             return response()->json(['message' => 'No autenticado'], 401);
         }
 
-        // verifica que sea admin o que sea el mismo perfil de la persona
+
         if (!$verUser->hasRole('ADMIN') && $verUser->id !== $user->id) {
             return response()->json(['message' => 'No tienes permiso para editar este perfil'], 403);
         }
@@ -219,7 +219,7 @@ class UserController extends Controller
 }
 
 
-        // Los atributos que editara el usuario
+
         $data = [
             'email'    => $userData['email'] ?? $user->email,
             'telefono' => $userData['telefono'] ?? $user->telefono,
@@ -330,14 +330,14 @@ class UserController extends Controller
             ], 403);
         }
 
-         // Busca todos los usuarios asta los inactivos
+        
         $user = User::withTrashed()->find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado.'], 404);
         }
 
-        // Verificamos si realmente estaba inactivo
+
         if ($user->trashed()) {
             //regresa el delete a null
             $user->restore();
