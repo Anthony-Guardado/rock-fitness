@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Imagen;
+use App\Models\Detalle_Membresia;
 
 class UserController extends Controller
 {
@@ -80,6 +81,15 @@ class UserController extends Controller
 
 
         $user = User::create($data);
+
+        //Se crea detalle membresia
+        Detalle_Membresia::create([
+        'usuario_id' => $user->id,
+        'membresia_id' => null,
+        'estado' => 'inactiva',
+        'fecha_inicio' => null,
+        'fecha_fin' => null,
+         ]);
 
         // Asignarle el rol al usuario creado
         if (isset($userData['rol'])) {
